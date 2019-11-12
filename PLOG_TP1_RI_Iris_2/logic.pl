@@ -10,6 +10,11 @@ checkGameState(Player, Board) :-
     checkFullBoard(Board),
     write('end\n').
 
+printComputerMove(NewRowIndex, NewColumnIndex):-
+      NewRow is NewRowIndex + 1,
+      NewColumn is NewColumnIndex + 1,
+      letter(NewRow, RowLetter),
+      write(' > Computer added a piece in the cell [row: '), write(RowLetter), write(' column: '), write(NewColumn), write(']\n').
 
 startGame(Player1, Player2) :-
     emptyBoard(InitialBoard),
@@ -33,13 +38,26 @@ blackPlayerTurn(Board, NewBoard, 'P') :-
     printBoard(Board),
     write('\n------------------ PLAYER 1 -------------------\n.\n'),
     askCoords(Board, black, NewBoard),
-    
     printBoard(NewBoard).
+
+blackPlayerTurn(Board, NewBoard, 'C') :-
+      write('\n----------------- COMPUTER 1 ------------------\n\n'),
+      generatePlayerMove(Board, NewRowIndex, NewColumnIndex),
+      replaceInMatrix(Board,  NewRowIndex, NewColumnIndex, black, NewBoard),
+      printComputerMove(NewRowIndex, NewColumnIndex),
+      printBoard(NewBoard).
 
 whitePlayerTurn(NewBoard, FinalBoard, 'P') :-
 printBoard(NewBoard),
       write('\n------------------ PLAYER 2 -------------------\n\n'),
       askCoords(NewBoard, white, FinalBoard),
+      printBoard(FinalBoard).
+
+whitePlayerTurn(Board, FinalBoard, 'C') :-
+      write('\n----------------- COMPUTER 2 ------------------\n\n'),
+      generatePlayerMove(Board, NewRowIndex, NewColumnIndex),
+      replaceInMatrix(Board,  NewRowIndex, NewColumnIndex, white, FinalBoard),
+      printComputerMove(NewRowIndex, NewColumnIndex),
       printBoard(FinalBoard).
 
 isEmptyCell(Board, Row, Column, Res) :-
