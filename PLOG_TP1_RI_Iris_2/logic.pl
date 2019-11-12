@@ -1,11 +1,14 @@
-askCoords(Board, Player, NewBoard, Expected) :-
+askCoords(Board, Player, NewBoard) :-
     manageRow(NewRow),
     manageColumn(NewColumn),
     write('\n'),
     ColumnIndex is NewColumn - 1,
     RowIndex is NewRow - 1,
-    checkMove(Board, Player, NewBoard, Expected, ColumnIndex, RowIndex).
+    checkMove(Board, Player, NewBoard, ColumnIndex, RowIndex).
 
+checkGameState(Player, Board) :-
+    checkFullBoard(Board),
+    write('end\n').
 
 
 startGame(Player1, Player2) :-
@@ -28,18 +31,19 @@ gameLoop(Board, Player1, Player2) :-
 
 blackPlayerTurn(Board, NewBoard, 'P') :-
     printBoard(Board),
-    write('\n------------------ PLAYER 1 -------------------\n\n'),
-    askCoords(Board, black, NewBoard, empty),
+    write('\n------------------ PLAYER 1 -------------------\n.\n'),
+    askCoords(Board, black, NewBoard),
+    
     printBoard(NewBoard).
 
 whitePlayerTurn(NewBoard, FinalBoard, 'P') :-
-printBoard(Board),
+printBoard(NewBoard),
       write('\n------------------ PLAYER 2 -------------------\n\n'),
-      askCoords(Board, white, FinalBoard, empty),
+      askCoords(NewBoard, white, FinalBoard),
       printBoard(FinalBoard).
 
 isEmptyCell(Board, Row, Column, Res) :-
-    ((getValueFromMatrix(Board, Row, Column, Value), Value == empty, !, 
+    ((getValueFromMatrix(Board, Row, Column, Value), Value \= null, Value \= black, Value \= white, !, 
     Res is 1);
     Res is 0).
 
@@ -55,16 +59,14 @@ checkValidSpots(Board, Row, Column, Result) :-
 
 
 
-checkMove(Board, Player, NewBoard, Expected, ColumnIndex, RowIndex):-
+checkMove(Board, Player, NewBoard, ColumnIndex, RowIndex):-
       (
           (Player == white; Player == black),
             (
-                (getValueFromMatrix(Board, RowIndex, ColumnIndex, Expected),
-                   (
-                       (isEmptyCell(Board, RowIndex, ColumnIndex, ResIsValidP), ResIsValid =:= 1),
+                       (isEmptyCell(Board, RowIndex, ColumnIndex, ResIsValid), ResIsValid =:= 1),
                         replaceInMatrix(Board, RowIndex, ColumnIndex, Player, NewBoard);
             (write('INVALID MOVE: That cell is not empty, please try again!\n\n'),
-            askCoords(Board, Player, NewBoard, Expected)))))).
+            askCoords(Board, Player, NewBoard)))).
 
 
 

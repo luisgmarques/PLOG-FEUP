@@ -14,37 +14,37 @@ readColumn(Column) :-
     write('  > Column '),
     read(Column).
 
-validateRow('A', NewRow) :-
+validateRow('a', NewRow) :-
     NewRow = 1.
 
-validateRow('B', NewRow) :-
+validateRow('b', NewRow) :-
     NewRow = 2.
 
-validateRow('C', NewRow) :-
+validateRow('c', NewRow) :-
     NewRow = 3.
 
-validateRow('D', NewRow) :-
+validateRow('d', NewRow) :-
     NewRow = 4.
 
-validateRow('E', NewRow) :-
+validateRow('e', NewRow) :-
     NewRow = 5.
 
-validateRow('F', NewRow) :-
+validateRow('f', NewRow) :-
     NewRow = 6.
 
-validateRow('G', NewRow) :-
+validateRow('g', NewRow) :-
     NewRow = 7.
 
-validateRow('H', NewRow) :-
+validateRow('h', NewRow) :-
     NewRow = 8.
 
-validateRow('I', NewRow) :-
+validateRow('i', NewRow) :-
     NewRow = 9.
 
-validateRow('J', NewRow) :-
+validateRow('j', NewRow) :-
     NewRow = 10.
 
-validateRow('K', NewRow) :-
+validateRow('k', NewRow) :-
     NewRow = 11.
 
 validateRow(_, NewRow) :-
