@@ -15,11 +15,7 @@ manageInput(2) :-
 manageInput(3) :-
     startGame('C','C'),
     mainMenu.
-
-manageInput(4) :-
-    display_game(_),
-    write('valid option!\n\n').
-
+    
 manageInput(0) :-
     write('\nExiting...\n\n').
 

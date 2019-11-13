@@ -6,6 +6,22 @@ askCoords(Board, Player, NewBoard) :-
     RowIndex is NewRow - 1,
     checkMove(Board, Player, NewBoard, ColumnIndex, RowIndex).
 
+firstPlay(Board, Player, NewBoard) :-
+    manageRow(NewRow),
+    manageColumn(NewColumn),
+    write('\n'),
+    ColumnIndex is NewColumn - 1,
+    RowIndex is NewRow - 1,
+    checkFirstPlay(Board, Player, NewBoard, ColumnIndex, RowIndex).
+
+checkFirstPlay(Board, Player, NewBoard, ColumnIndex, RowIndex) :-
+    (
+        (
+    isEmptyCell(Board, RowIndex, ColumnIndex, ResIsValid), ResIsValid =:= 1),
+                        replaceInMatrix(Board, RowIndex, ColumnIndex, Player, NewBoard);
+                        (write('INVALID MOVE: That cell is not valid, please try again!\n\n'),
+            firstPlay(Board, Player, NewBoard))).
+
 checkGameState(Player, Board) :-
     checkFullBoard(Board),
     write('end\n').
@@ -48,7 +64,7 @@ blackPlayerTurn(Board, NewBoard, 'C') :-
       printBoard(NewBoard).
 
 whitePlayerTurn(NewBoard, FinalBoard, 'P') :-
-printBoard(NewBoard),
+      printBoard(NewBoard),
       write('\n------------------ PLAYER 2 -------------------\n\n'),
       askCoords(NewBoard, white, FinalBoard),
       printBoard(FinalBoard).
@@ -60,7 +76,7 @@ whitePlayerTurn(Board, FinalBoard, 'C') :-
       printComputerMove(NewRowIndex, NewColumnIndex),
       printBoard(FinalBoard).
 
-isEmptyCell(Board, Row, Column, Res) :-
+isEmptyCell(Board, Row, Column, Res, Value) :-
     ((getValueFromMatrix(Board, Row, Column, Value), Value \= null, Value \= black, Value \= white, !, 
     Res is 1);
     Res is 0).
@@ -81,49 +97,12 @@ checkMove(Board, Player, NewBoard, ColumnIndex, RowIndex):-
       (
           (Player == white; Player == black),
             (
-                       (isEmptyCell(Board, RowIndex, ColumnIndex, ResIsValid), ResIsValid =:= 1),
-                        replaceInMatrix(Board, RowIndex, ColumnIndex, Player, NewBoard);
+                       (isEmptyCell(Board, RowIndex, ColumnIndex, ResIsValid, Value),ResIsValid =:= 1),
+                        (
+                        Value \= empty,
+                            (replaceInMatrix(Board, RowIndex, ColumnIndex, Player, NewNewBoard), 
+                            RowIndex1 is 10 - RowIndex, ColumnIndex1 is 10 - ColumnIndex,
+                            replaceInMatrix(NewNewBoard, RowIndex1, ColumnIndex1, Player, NewBoard), write('\ncolor\n'));
+                        replaceInMatrix(Board, RowIndex, ColumnIndex, Player, NewBoard),write('\nempty\n'));
             (write('INVALID MOVE: That cell is not empty, please try again!\n\n'),
             askCoords(Board, Player, NewBoard)))).
-
-
-
-
-
-
-
-/*
-play(Game) :-
-    initialize(Game, Position, Player),
-    display_game(Position, Player),
-    play(Position, Player, Result).
-
-play(Position, Player, Result) :-
-    game_over(Position, Player, Result).
-
-play(Position, Player, Result) :-
-    choose_move(Position, Player, Move),
-    move(Move, Position, Position1),
-    display_game(Position1, Player),
-    !, play(Position1, Player1, Result).
-
-/** choose best move **/
-
-/*
-choose_move(Position, computer, Move) :-
-    findall(M, move(Position, M), Moves),
-    evaluate_and_choose(Moves, Position, ([], -1000), Move).
-
-evaluate_and_choose([Move|Moves], Position, Record, BestMove) :-
-    move(Move, Position, Position1),
-    value(Position1, Value),
-    update(Move, Value, Record, Record1),
-    evaluate_and_choose(Moves, Position, Record1, BestMove).
-evaluate_and_choose([], Position, (Move, Value), Move).
-
-update(Move, Value, (Move1, Value1), (Move1, Value1)) :-
-    Value <= Value1.
-update(Move, Value, (Move1, Value1), (Move, Value)) :-
-    Value > Value1.
-
-    */
