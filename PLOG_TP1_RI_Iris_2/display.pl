@@ -11,13 +11,13 @@ emptyBoard([[null, null, null,           red, orange, yellow, green, pink, red, 
            [null, null,              red, pink, green, yellow, orange, red,               null, null, null]]).
 
 
-symbol(null, ' * ').
-symbol(red, ' R ').
-symbol(orange, ' O ').
-symbol(yellow, ' Y ').
-symbol(green, ' G ').
-symbol(pink, ' P ').
-symbol(empty, ' . ').
+symbol(null, '     ').
+symbol(red, '  R  ').
+symbol(orange, '  O  ').
+symbol(yellow, '  Y  ').
+symbol(green, '  G  ').
+symbol(pink, '  P  ').
+symbol(empty, '  .  ').
 
 
 symbol(black, ' 1 ').
@@ -37,8 +37,8 @@ letter(11, L) :- L='K'.
 
 printBoard(X) :-
     nl,
-    write('   |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  10 |  11 |\n'),
-    write('---|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|\n'),
+    write('       1    2    3    4    5    6    7    8    9    10   11  \n'),
+    write('   |--------------------------------------------------------|\n\n'),
     printMatrix(X, 1).
 
 printMatrix([], 12).
@@ -50,7 +50,8 @@ printMatrix([Head|Tail], N) :-
     N1 is N + 1,
     write(' | '),
     printLine(Head),
-    write('\n---|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|\n'),
+    write('\n\n'),
+    %write('\n---|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|\n'),
     printMatrix(Tail, N1).
 
 printLine([]).
@@ -58,7 +59,7 @@ printLine([]).
 printLine([Head|Tail]) :-
     symbol(Head, S),
     write(S),
-    write(' | '),
+    %write(' | '),
     printLine(Tail).
 
 display_game(X) :- emptyBoard(X), printBoard(X).
