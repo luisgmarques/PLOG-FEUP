@@ -60,12 +60,12 @@ gameLoop(Board, Player1, Player2) :-
 
 blackPlayerTurn(Board, NewBoard, 'P') :-
     printBoard(Board),
-    write('\n----------------------- PLAYER 1 -------------------------\n.\n'),
+    write('\n--------------------- PLAYER [b]lack ------------------------\n.\n'),
     askCoords(Board, black, NewBoard),
     printBoard(NewBoard).
 
 blackPlayerTurn(Board, NewBoard, 'C') :-
-      write('\n---------------------- COMPUTER 1 -----------------------\n\n'),
+      write('\n------------------- COMPUTER [b]lack --------------------\n\n'),
       generatePlayerMove(Board, NewRowIndex, NewColumnIndex, Value),
       printComputerPlayBlack(Board, NewRowIndex, NewColumnIndex, NewBoard, Value).
 
@@ -86,12 +86,12 @@ printComputerPlayBlack(Board, NewRowIndex, NewColumnIndex, FinalBoard, Value) :-
 
 whitePlayerTurn(NewBoard, FinalBoard, 'P') :-
       printBoard(NewBoard),
-      write('\n------------------------ PLAYER 2 ------------------------\n\n'),
+      write('\n--------------------- PLAYER [w]hite ---------------------\n\n'),
       askCoords(NewBoard, white, FinalBoard),
       printBoard(FinalBoard).
 
 whitePlayerTurn(Board, FinalBoard, 'C') :-
-       write('\n---------------------- COMPUTER 2 -----------------------\n\n'),
+       write('\n------------------- COMPUTER [w]hite --------------------\n\n'),
        generatePlayerMove(Board, NewRowIndex, NewColumnIndex, Value),
        printComputerPlayWhite(Board, NewRowIndex, NewColumnIndex, FinalBoard, Value), sleep(1).
 
@@ -134,11 +134,11 @@ checkMove(Board, Player, NewBoard, ColumnIndex, RowIndex):-
             (
                        (isEmptyCell(Board, RowIndex, ColumnIndex, ResIsValid, Value),ResIsValid =:= 1),
                         (
-                        Value \= empty,
+                        Value \= empty, % Verifica se jogou em celulas coloridas
                             (replaceInMatrix(Board, RowIndex, ColumnIndex, Player, NewNewBoard), 
                             RowIndex1 is 10 - RowIndex, ColumnIndex1 is 10 - ColumnIndex,
                             replaceInMatrix(NewNewBoard, RowIndex1, ColumnIndex1, Player, NewBoard));
-                        replaceInMatrix(Board, RowIndex, ColumnIndex, Player, NewBoard)
+                            replaceInMatrix(Board, RowIndex, ColumnIndex, Player, NewBoard)
                         );
             (write('INVALID MOVE: That cell is not empty, please try again!\n\n'),
             askCoords(Board, Player, NewBoard)))).

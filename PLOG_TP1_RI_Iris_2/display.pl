@@ -20,8 +20,8 @@ symbol(pink, '  P  ').
 symbol(empty, '  .  ').
 
 
-symbol(black, '  1  ').
-symbol(white, '  2  ').
+symbol(black, ' [b] ').
+symbol(white, ' [w] ').
 
 letter(1, 'A').
 letter(2, 'B').
