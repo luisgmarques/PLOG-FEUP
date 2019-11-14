@@ -20,20 +20,20 @@ symbol(pink, '  P  ').
 symbol(empty, '  .  ').
 
 
-symbol(black, ' 1 ').
-symbol(white, ' 2 ').
+symbol(black, '  1  ').
+symbol(white, '  2  ').
 
-letter(1, L) :- L='A'.
-letter(2, L) :- L='B'.
-letter(3, L) :- L='C'.
-letter(4, L) :- L='D'.
-letter(5, L) :- L='E'.
-letter(6, L) :- L='F'.
-letter(7, L) :- L='G'.
-letter(8, L) :- L='H'.
-letter(9, L) :- L='I'.
-letter(10, L) :- L='J'.
-letter(11, L) :- L='K'.
+letter(1, 'A').
+letter(2, 'B').
+letter(3, 'C').
+letter(4, 'D').
+letter(5, 'E').
+letter(6, 'F').
+letter(7, 'G').
+letter(8, 'H').
+letter(9, 'I').
+letter(10, 'J').
+letter(11, 'K').
 
 printBoard(X) :-
     nl,
@@ -51,7 +51,6 @@ printMatrix([Head|Tail], N) :-
     write(' | '),
     printLine(Head),
     write('\n\n'),
-    %write('\n---|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|\n'),
     printMatrix(Tail, N1).
 
 printLine([]).
@@ -59,7 +58,4 @@ printLine([]).
 printLine([Head|Tail]) :-
     symbol(Head, S),
     write(S),
-    %write(' | '),
     printLine(Tail).
-
-display_game(X) :- emptyBoard(X), printBoard(X).

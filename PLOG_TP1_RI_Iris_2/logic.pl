@@ -66,19 +66,23 @@ blackPlayerTurn(Board, NewBoard, 'P') :-
 
 blackPlayerTurn(Board, NewBoard, 'C') :-
       write('\n---------------------- COMPUTER 1 -----------------------\n\n'),
-      generatePlayerMove(Board, NewRowIndex, NewColumnIndex),
+      generatePlayerMove(Board, NewRowIndex, NewColumnIndex, Value),
+      printComputerPlayBlack(Board, NewRowIndex, NewColumnIndex, NewBoard, Value).
 
-      (Value \= empty, 
-      (replaceInMatrix(Board,  NewRowIndex, NewColumnIndex, black, NewBoard), 
+printComputerPlayBlack(Board, NewRowIndex, NewColumnIndex, FinalBoard, Value) :-
+    (Value \= empty, !,
+    (replaceInMatrix(Board,  NewRowIndex, NewColumnIndex, black, NewBoard), 
       NewRowIndex1 is 10 - NewRowIndex, NewColumnIndex1 is 10 - NewColumnIndex,
-      replaceInMatrix(NewBoard,  NewRowIndex1, NewColumnIndex1, black, FinalBoard)),
+      replaceInMatrix(NewBoard,  NewRowIndex1, NewColumnIndex1, black, FinalBoard),
       printComputerMove(NewRowIndex, NewColumnIndex),
-      printComputerMove(NewRowIndex1, NewColumnIndex1),
-      printBoard(FinalBoard)),!.
+      printComputerMove(NewRowIndex1, NewColumnIndex1)
+      );
 
-      replaceInMatrix(Board,  NewRowIndex, NewColumnIndex, black, NewBoard),
-      printComputerMove(NewRowIndex, NewColumnIndex),
-      printBoard(NewBoard).
+      replaceInMatrix(Board,  NewRowIndex, NewColumnIndex, white, FinalBoard),
+      printComputerMove(NewRowIndex, NewColumnIndex)
+      ),
+    
+      printBoard(FinalBoard).
 
 whitePlayerTurn(NewBoard, FinalBoard, 'P') :-
       printBoard(NewBoard),
@@ -87,21 +91,24 @@ whitePlayerTurn(NewBoard, FinalBoard, 'P') :-
       printBoard(FinalBoard).
 
 whitePlayerTurn(Board, FinalBoard, 'C') :-
-       ( 
-        write('\n---------------------- COMPUTER 2 -----------------------\n\n'),
-       generatePlayerMove(Board, NewRowIndex, NewColumnIndex, Value, Res), Res =:= 1,
-        
-      (replaceInMatrix(Board,  NewRowIndex, NewColumnIndex, white, NewBoard), 
+       write('\n---------------------- COMPUTER 2 -----------------------\n\n'),
+       generatePlayerMove(Board, NewRowIndex, NewColumnIndex, Value),
+       printComputerPlayWhite(Board, NewRowIndex, NewColumnIndex, FinalBoard, Value), sleep(1).
+
+
+printComputerPlayWhite(Board, NewRowIndex, NewColumnIndex, FinalBoard, Value) :-
+    (Value \= empty, !,
+    (replaceInMatrix(Board,  NewRowIndex, NewColumnIndex, white, NewBoard), 
       NewRowIndex1 is 10 - NewRowIndex, NewColumnIndex1 is 10 - NewColumnIndex,
       replaceInMatrix(NewBoard,  NewRowIndex1, NewColumnIndex1, white, FinalBoard),
       printComputerMove(NewRowIndex, NewColumnIndex),
       printComputerMove(NewRowIndex1, NewColumnIndex1)
       );
-      write('\njfijfijf\n'),
+
       replaceInMatrix(Board,  NewRowIndex, NewColumnIndex, white, FinalBoard),
       printComputerMove(NewRowIndex, NewColumnIndex)
       ),
-
+    
       printBoard(FinalBoard).
 
 isEmptyCell(Board, Row, Column, Res, Value) :-
