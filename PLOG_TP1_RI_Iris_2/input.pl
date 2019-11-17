@@ -1,7 +1,11 @@
+/* Le linha intruduzida pelo jogador/computador
+    e verifica se é uma linha que faz parte do tabuleiro */
 manageRow(NewRow) :-
     readRow(Row),
     validateRow(Row, NewRow).
 
+/* Le coluna intruduzida pelo jogador/computador
+    e verifica se é uma coluna que faz parte do tabuleiro */
 manageColumn(NewColumn) :-
     readColumn(Column),
     validateColumn(Column, NewColumn).

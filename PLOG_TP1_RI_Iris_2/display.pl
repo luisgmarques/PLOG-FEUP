@@ -35,6 +35,7 @@ letter(9, 'I').
 letter(10, 'J').
 letter(11, 'K').
 
+/* Imprime tabuleiro */
 printBoard(X) :-
     nl,
     write('       1    2    3    4    5    6    7    8    9    10   11  \n'),
