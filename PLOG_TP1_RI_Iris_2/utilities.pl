@@ -32,9 +32,4 @@ getValueFromMatrix([_|T], Row, Column, Value) :-
 ‘empty’ no tabuleiro.*/
 checkFullBoard(Board) :-
       \+ (append(_, [R|_], Board),
-	append(_, ['empty'|_], R);
-        append(_, ['red'|_], R);
-        append(_, ['orange'|_], R);
-        append(_, ['yellow'|_], R);
-        append(_, ['pink'|_], R);
-        append(_, ['green'|_], R)).
+	append(_, ['empty'|_], R)).

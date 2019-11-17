@@ -3,7 +3,7 @@
 atualmente vazia. Caso seja válida, ele devolve essa linha e coluna, caso 
 contrário este predicado chama-se a si própria para tentar gerar uma nova posição.*/
 generatePlayerMove(Board, Row, Column, Value):-
-    write('Thinking... \n'), sleep(1),
+    
     random(0,11,RandomRow),
     random(0,11,RandomColumn),
     (isEmptyCell(Board, RandomRow, RandomColumn, ResIsEmptyCell, Value), ResIsEmptyCell=:=1,
