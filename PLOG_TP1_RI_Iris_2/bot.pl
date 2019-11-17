@@ -2,7 +2,7 @@
 /*Gera um linha e coluna aleatória, verifica se é uma jogada válida, ou seja, se a célula está 
 atualmente vazia. Caso seja válida, ele devolve essa linha e coluna, caso 
 contrário este predicado chama-se a si própria para tentar gerar uma nova posição.*/
-generatePlayerMove(Board, Row, Column, Value):-
+choose_move(Board, Row, Column, Value):-
     
     random(0,11,RandomRow),
     random(0,11,RandomColumn),

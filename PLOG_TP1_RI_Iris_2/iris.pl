@@ -8,4 +8,4 @@
 :- use_module(library(system)).
 
 iris :-
-      mainMenu.
+      play.

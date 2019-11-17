@@ -1,4 +1,4 @@
-mainMenu :-
+play :-
     printMainMenu,
     askMenuOption,
     read(Input),

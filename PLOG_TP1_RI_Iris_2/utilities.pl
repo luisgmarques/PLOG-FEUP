@@ -20,13 +20,13 @@ getValueFromList([_|T], Index, Value) :-
         Index1 is Index - 1,
         getValueFromList(T, Index1, Value).
 
-getValueFromMatrix([H|_], 0, Column, Value) :-
+value([H|_], 0, Column, Value) :-
         getValueFromList(H, Column, Value).
 
-getValueFromMatrix([_|T], Row, Column, Value) :-
+value([_|T], Row, Column, Value) :-
         Row > 0,
         Row1 is Row - 1,
-        getValueFromMatrix(T, Row1, Column, Value).
+        value(T, Row1, Column, Value).
 
 /*Verifica se o tabuleiro está cheio, confirmando se não há nenhuma célula
 ‘empty’ no tabuleiro.*/

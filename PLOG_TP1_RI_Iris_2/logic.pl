@@ -1,4 +1,5 @@
-askCoords(Board, Player, NewBoard) :-
+% Pergunta ao jogador onde quer jogar
+move(Board, Player, NewBoard) :-
     manageRow(NewRow),
     manageColumn(NewColumn),
     write('\n'),
@@ -30,15 +31,18 @@ checkFirstPlay(Board, Player, NewBoard, ColumnIndex, RowIndex) :-
                         (write('INVALID MOVE: That cell is not valid, please try again!\n\n'),
             firstPlay(Board, Player, NewBoard))).
 
-checkGameState(Player, Board) :-
+% Verifica se o tabuleiro está cheio
+game_over(Player, Board) :-
     checkFullBoard(Board).
 
+% Mostra na consola a jogada do computador
 printComputerMove(NewRowIndex, NewColumnIndex):-
       NewRow is NewRowIndex + 1,
       NewColumn is NewColumnIndex + 1,
       letter(NewRow, RowLetter),
       write(' > Computer added a piece in the cell [row: '), write(RowLetter), write(' column: '), write(NewColumn), write(']\n').
 
+% 
 startGame(Player1, Player2) :-
     emptyBoard(InitialBoard),
     gameLoop(InitialBoard, Player1, Player2).
@@ -49,27 +53,28 @@ startGame(Player1, Player2) :-
 gameLoop(Board, Player1, Player2) :-
       blackPlayerTurn(Board, NewBoard, Player1),
       (
-            (checkGameState('black', NewBoard), write('\nThanks for playing!\n'));
+            (game_over('black', NewBoard), write('\nThanks for playing!\n'));
             (whitePlayerTurn(NewBoard, FinalBoard, Player2),
                   (
-                        (checkGameState('white', FinalBoard), write('\nThanks for playing!\n'));
+                        (game_over('white', FinalBoard), write('\nThanks for playing!\n'));
                         (gameLoop(FinalBoard, Player1, Player2))
                   )
             )
       ),
-    checkBlackScore(FinalBoard, 0, 0, 0),
+      checkBlackScore(FinalBoard, 0, 0, 0),
     checkWhiteScore(FinalBoard, 0, 0, 0).
+    
 
 blackPlayerTurn(Board, NewBoard, 'P') :-
     printBoard(Board),
     write('\n--------------------- PLAYER [b]lack ----------------------\n\n'),
-    askCoords(Board, black, NewBoard).
+    move(Board, black, NewBoard).
     %printBoard(NewBoard).
 
 blackPlayerTurn(Board, NewBoard, 'C') :-
       write('\n------------------- COMPUTER [b]lack --------------------\n\n'),
       write('Thinking... \n'),
-      generatePlayerMove(Board, NewRowIndex, NewColumnIndex, Value),
+      choose_move(Board, NewRowIndex, NewColumnIndex, Value),
       printComputerPlayBlack(Board, NewRowIndex, NewColumnIndex, NewBoard, Value).
 
 printComputerPlayBlack(Board, NewRowIndex, NewColumnIndex, FinalBoard, Value) :-
@@ -90,13 +95,13 @@ printComputerPlayBlack(Board, NewRowIndex, NewColumnIndex, FinalBoard, Value) :-
 whitePlayerTurn(NewBoard, FinalBoard, 'P') :-
       printBoard(NewBoard),
       write('\n--------------------- PLAYER [w]hite ---------------------\n\n'),
-      askCoords(NewBoard, white, FinalBoard).
+      move(NewBoard, white, FinalBoard).
       %printBoard(FinalBoard).
 
 whitePlayerTurn(Board, FinalBoard, 'C') :-
        write('\n------------------- COMPUTER [w]hite --------------------\n\n'),
        write('Thinking... \n'),
-       generatePlayerMove(Board, NewRowIndex, NewColumnIndex, Value),
+       choose_move(Board, NewRowIndex, NewColumnIndex, Value),
        printComputerPlayWhite(Board, NewRowIndex, NewColumnIndex, FinalBoard, Value), sleep(1).
 
 
@@ -116,7 +121,7 @@ printComputerPlayWhite(Board, NewRowIndex, NewColumnIndex, FinalBoard, Value) :-
       printBoard(FinalBoard).
 
 isEmptyCell(Board, Row, Column, Res, Value) :-
-    ((getValueFromMatrix(Board, Row, Column, Value), Value \== null, Value \== black, Value \== white, !, 
+    ((value(Board, Row, Column, Value), Value \== null, Value \== black, Value \== white, !, 
     Res is 1);
     Res is 0).
 
@@ -146,7 +151,7 @@ checkMove(Board, Player, NewBoard, ColumnIndex, RowIndex):-
                             replaceInMatrix(Board, RowIndex, ColumnIndex, Player, NewBoard)
                         );
             (write('INVALID MOVE: That cell is not empty, please try again!\n\n'),
-            askCoords(Board, Player, NewBoard)))).
+            move(Board, Player, NewBoard)))).
 
 
 checkBlackScore(_, 11, 11, Amount) :-
@@ -155,7 +160,7 @@ checkBlackScore(_, 11, 11, Amount) :-
     write('\n').
 
 checkBlackScore(Board, ColumnIndex, RowIndex, Amount) :- 
-    getValueFromMatrix(Board, RowIndex, ColumnIndex, Value),
+    value(Board, RowIndex, ColumnIndex, Value),
     ColumnIndex1 is ColumnIndex + 1,
     (ColumnIndex1 =:= 11, RowIndex1 is RowIndex + 1, ColumnIndex1 is 0),
     (Value == black, 
@@ -170,11 +175,15 @@ checkWhiteScore(_, 11, 11, Amount) :-
     write('\n').
 
 checkWhiteScore(Board, ColumnIndex, RowIndex, Amount) :- 
-    getValueFromMatrix(Board, RowIndex, ColumnIndex, Value),
-    ColumnIndex1 is ColumnIndex + 1,
-    (ColumnIndex1 =:= 11, RowIndex1 is RowIndex + 1, ColumnIndex1 is 0),
-    (Value == white, 
-    Amount1 is Amount + 1,
-    write('white\n'),
-    checkWhiteScore(Board, ColumnIndex1, RowIndex1, Amount1));
-    checkWhiteScore(Board, ColumnIndex1, RowIndex1, Amount).
+    (
+        value(Board, RowIndex, ColumnIndex, Value),
+        ColumnIndex1 is ColumnIndex + 1,
+        ColumnIndex1 == 11, (RowIndex1 is RowIndex + 1, ColumnIndex1 is 0);
+        (Value == white, 
+        Amount1 is Amount + 1,
+        write('white\n'),
+        checkWhiteScore(Board, ColumnIndex1, RowIndex1, Amount1));
+        checkWhiteScore(Board, ColumnIndex1, RowIndex1, Amount)
+    ).
+
+    
