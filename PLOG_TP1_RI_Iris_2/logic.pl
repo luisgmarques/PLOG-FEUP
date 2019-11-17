@@ -41,7 +41,7 @@ printComputerMove(NewRowIndex, NewColumnIndex):-
 
 startGame(Player1, Player2) :-
     emptyBoard(InitialBoard),
-    gameLoop(InitialBoard, Player1, Player2),
+    gameLoop(InitialBoard, Player1, Player2).
     
 
 
@@ -57,9 +57,8 @@ gameLoop(Board, Player1, Player2) :-
                   )
             )
       ),
-      Amount is 0,
-    checkBlackScore(FinalBoard, 0, 0, Amount),
-    checkWhiteScore(FinalBoard, 0, 0, Amount).
+    checkBlackScore(FinalBoard, 0, 0, 0),
+    checkWhiteScore(FinalBoard, 0, 0, 0).
 
 blackPlayerTurn(Board, NewBoard, 'P') :-
     printBoard(Board),
@@ -161,6 +160,7 @@ checkBlackScore(Board, ColumnIndex, RowIndex, Amount) :-
     (ColumnIndex1 =:= 11, RowIndex1 is RowIndex + 1, ColumnIndex1 is 0),
     (Value == black, 
     Amount1 is Amount + 1,
+    write('black\n'),
     checkBlackScore(Board, ColumnIndex1, RowIndex1, Amount1));
     checkBlackScore(Board, ColumnIndex1, RowIndex1, Amount).
 
@@ -175,6 +175,6 @@ checkWhiteScore(Board, ColumnIndex, RowIndex, Amount) :-
     (ColumnIndex1 =:= 11, RowIndex1 is RowIndex + 1, ColumnIndex1 is 0),
     (Value == white, 
     Amount1 is Amount + 1,
-    write('1\n'),
+    write('white\n'),
     checkWhiteScore(Board, ColumnIndex1, RowIndex1, Amount1));
     checkWhiteScore(Board, ColumnIndex1, RowIndex1, Amount).
