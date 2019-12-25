@@ -2,28 +2,57 @@
     responsavel pela a logica do jogo */
 startGame(Player1, Player2) :-
     emptyBoard(InitialBoard),
-    gameLoop(InitialBoard, Player1, Player2).
+    (
+    (Player1 == 'P', 
+    firstPlay(InitialBoard, Player1, NewBoard),
+    printBoard(NewBoard),
+    gameLoop(NewBoard, Player2, Player1));
+    (Player1 == 'C',
+    choose_first_move(InitialBoard, NewRowIndex, NewColumnIndex, Value),
+    printComputerFirstMove(InitialBoard, NewRowIndex, NewColumnIndex, NewBoard, Value),
+    gameLoop(NewBoard, Player2, Player1)
+    ),
+    checkBlackScore(NewBoard, 0, 0, 0),
+    checkWhiteScore(NewBoard, 0, 0, 0)).
 
 % Verifica se o tabuleiro está cheio
 game_over(Player, Board) :-
     checkFullBoard(Board).
 
+
+/* Primeira jogada. Colocação de uma peça pelo o jogador preto */
+firstPlay(Board, Player1, NewBoard) :-
+    printBoard(Board),
+    write('\n--------------------- PLAYER [b]lack ----------------------\n\n'),
+    manageRow(NewRow),
+    manageColumn(NewColumn),
+    write('\n'),
+    ColumnIndex is NewColumn - 1,
+    RowIndex is NewRow - 1,
+    checkFirstPlay(Board, Player1, NewBoard, ColumnIndex, RowIndex).
+
+checkFirstPlay(Board, Player1, NewBoard, ColumnIndex, RowIndex) :-
+    (
+        (
+    isValidCell(Board, RowIndex, ColumnIndex, ResIsValid, Value), ResIsValid =:= 1),
+                        replaceInMatrix(Board, RowIndex, ColumnIndex, black, NewBoard);
+                        (write('INVALID MOVE: That cell is not valid, please try again!\n\n'),
+            firstPlay(Board, Player1, NewBoard))).
+
 /* Princial predicado do jogo.
     O jogo vai sendo jogado por cada jogador
     até o tabuleiro estiver cheio */
 gameLoop(Board, Player1, Player2) :-
-      blackPlayerTurn(Board, NewBoard, Player1),
+      whitePlayerTurn(Board, NewBoard, Player1),
       (
-            (game_over('black', NewBoard), write('\nThanks for playing!\n'));
-            (whitePlayerTurn(NewBoard, FinalBoard, Player2),
+            (game_over('white', NewBoard), write('\nThanks for playing!\n'));
+            (blackPlayerTurn(NewBoard, FinalBoard, Player2),
                   (
-                        (game_over('white', FinalBoard), write('\nThanks for playing!\n'));
+                        (game_over('black', FinalBoard), write('\nThanks for playing!\n'));
                         (gameLoop(FinalBoard, Player1, Player2))
                   )
             )
-      ),
-      checkBlackScore(FinalBoard, 0, 0, 0),
-    checkWhiteScore(FinalBoard, 0, 0, 0).
+      ).
     
 
 /* Jogada feita pelo o jogador preto */
@@ -50,8 +79,11 @@ printComputerPlayBlack(Board, NewRowIndex, NewColumnIndex, FinalBoard, Value) :-
       printComputerMove(NewRowIndex1, NewColumnIndex1)
       );
 
-      replaceInMatrix(Board,  NewRowIndex, NewColumnIndex, white, FinalBoard),
-      printComputerMove(NewRowIndex, NewColumnIndex)
+      replaceInMatrix(Board,  NewRowIndex, NewColumnIndex, black, NewBoard),
+      choose_second_move(NewBoard, Row, Column, Value),
+      replaceInMatrix(NewBoard,  Row, Column, black, FinalBoard),
+      printComputerMove(NewRowIndex, NewColumnIndex),
+      printComputerMove(Row, Column)
       ),
     
       printBoard(FinalBoard).
@@ -68,7 +100,7 @@ whitePlayerTurn(Board, FinalBoard, 'C') :-
        write('\n------------------- COMPUTER [w]hite --------------------\n\n'),
        write('Thinking... \n'),
        choose_move(Board, NewRowIndex, NewColumnIndex, Value),
-       printComputerPlayWhite(Board, NewRowIndex, NewColumnIndex, FinalBoard, Value), sleep(1).
+       printComputerPlayWhite(Board, NewRowIndex, NewColumnIndex, FinalBoard, Value).
 
 /* Imprime na consola a jogada do computador branco */
 printComputerPlayWhite(Board, NewRowIndex, NewColumnIndex, FinalBoard, Value) :-
@@ -80,9 +112,20 @@ printComputerPlayWhite(Board, NewRowIndex, NewColumnIndex, FinalBoard, Value) :-
       printComputerMove(NewRowIndex1, NewColumnIndex1)
       );
 
-      replaceInMatrix(Board,  NewRowIndex, NewColumnIndex, white, FinalBoard),
-      printComputerMove(NewRowIndex, NewColumnIndex)
+      replaceInMatrix(Board,  NewRowIndex, NewColumnIndex, white, NewBoard),
+      choose_second_move(NewBoard, Row, Column, Value),
+      replaceInMatrix(NewBoard,  Row, Column, white, FinalBoard),
+      printComputerMove(NewRowIndex, NewColumnIndex),
+      printComputerMove(Row, Column)
       ),
+    
+      printBoard(FinalBoard).
+
+/* Imprime a primeira jogada feita pelo o computador */
+printComputerFirstMove(Board, NewRowIndex, NewColumnIndex, FinalBoard, Value) :-
+      replaceInMatrix(Board,  NewRowIndex, NewColumnIndex, black, FinalBoard),
+      printComputerMove(NewRowIndex, NewColumnIndex)
+      ,
     
       printBoard(FinalBoard).
 
@@ -155,26 +198,25 @@ checkMove(Board, Player, NewBoard, ColumnIndex, RowIndex):-
             move(Board, Player, NewBoard)))).
 
 
+/* Score  - WIP */
 checkBlackScore(_, 11, 11, Amount) :-
     write('\n Black score: '),
     write(Amount),
     write('\n').
-
 checkBlackScore(Board, ColumnIndex, RowIndex, Amount) :- 
     value(Board, RowIndex, ColumnIndex, Value),
     ColumnIndex1 is ColumnIndex + 1,
-    (ColumnIndex1 =:= 11, RowIndex1 is RowIndex + 1, ColumnIndex1 is 0),
+    (ColumnIndex1 == 11, RowIndex1 is RowIndex + 1, ColumnIndex1 is 0),
     (Value == black, 
     Amount1 is Amount + 1,
-    write('black\n'),
     checkBlackScore(Board, ColumnIndex1, RowIndex1, Amount1));
     checkBlackScore(Board, ColumnIndex1, RowIndex1, Amount).
+
 
 checkWhiteScore(_, 11, 11, Amount) :-
     write('\n White score: '),
     write(Amount),
     write('\n').
-
 checkWhiteScore(Board, ColumnIndex, RowIndex, Amount) :- 
     (
         value(Board, RowIndex, ColumnIndex, Value),
@@ -182,9 +224,9 @@ checkWhiteScore(Board, ColumnIndex, RowIndex, Amount) :-
         ColumnIndex1 == 11, (RowIndex1 is RowIndex + 1, ColumnIndex1 is 0);
         (Value == white, 
         Amount1 is Amount + 1,
-        write('white\n'),
         checkWhiteScore(Board, ColumnIndex1, RowIndex1, Amount1));
         checkWhiteScore(Board, ColumnIndex1, RowIndex1, Amount)
     ).
+
 
     

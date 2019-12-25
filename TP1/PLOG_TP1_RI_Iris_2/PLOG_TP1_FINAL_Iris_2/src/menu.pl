@@ -6,15 +6,15 @@ play :-
 
 manageInput(1) :-
     startGame('P','P'),
-    mainMenu.
+    play.
 
 manageInput(2) :-
     startGame('P','C'),
-    mainMenu.
+    play.
 
 manageInput(3) :-
     startGame('C','C'),
-    mainMenu.
+    play.
     
 manageInput(0) :-
     write('\nExiting...\n\n').
